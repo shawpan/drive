@@ -23,7 +23,7 @@ tf.python.control_flow_ops = tf
 def get_model():
     """ Get the model, this is a slight modification of comma.ai model
     """
-    # image size should be (45,60) with 3 color channels
+    # image size should be (45,160) with 3 color channels
     ch, row, col = 3, 45, 160
 
     model = Sequential()
@@ -73,7 +73,7 @@ def batch_data_generator (x, y, batch_size):
             x_data = np.append(x_data, np.array([image]), axis = 0)
             y_data = np.append(y_data, y[i])
             x_data = np.append(x_data, np.array([flipped_image]), axis = 0)
-            # Flipe the steering angle too for the flipped image
+            # Flip the steering angle too for the flipped image
             y_data = np.append(y_data, -1 * y[i])
         yield x_data, y_data
 
