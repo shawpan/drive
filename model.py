@@ -21,8 +21,9 @@ import tensorflow as tf
 tf.python.control_flow_ops = tf
 
 def get_model():
-    """ Get the designed NN model
+    """ Get the model, this is a slight modification of comma.ai model
     """
+    # image size should be (45,60) with 3 color channels
     ch, row, col = 3, 45, 160
 
     model = Sequential()
@@ -31,10 +32,14 @@ def get_model():
             output_shape=(row, col, ch)))
     # model.add(Convolution2D(3, 1, 1, border_mode="same"))
     # model.add(ELU())
+
+    # Conv Layer1 of 16 filters having size(8, 8) with strides (4,4)
     model.add(Convolution2D(16, 8, 8, subsample=(4, 4), border_mode="same"))
     model.add(ELU())
+    # Conv Layer1 of 32 filters having size(5, 5) with strides (2,2)
     model.add(Convolution2D(32, 5, 5, subsample=(2, 2), border_mode="same"))
     model.add(ELU())
+    # Conv Layer1 of 64 filters having size(5, 5) with strides (2,2)
     model.add(Convolution2D(64, 5, 5, subsample=(2, 2), border_mode="same"))
     model.add(Flatten())
     model.add(Dropout(.5))
@@ -46,11 +51,12 @@ def get_model():
 
     return model
 
-def train_data_generator (x, y, batch_size):
+def batch_data_generator (x, y, batch_size):
     """ Generates (inputs, outputs) for training in batches
     """
     total = (len(y) // batch_size ) * batch_size
     while True:
+        # Choose a random start index for current batch
         start = np.random.randint(0, total - batch_size)
         end = min(start + batch_size, total)
         x_data = np.empty((0,45,160, 3))
@@ -58,12 +64,16 @@ def train_data_generator (x, y, batch_size):
 
         for i in np.arange(start, end):
             image = cv2.imread('./data/' + x[i][0])
+            # Crop the image vertically to remove unnecessary portions such as sky
             image = image[40:130]
-            image = cv2.resize(image, (0,0), fx=0.5, fy=0.5)
+            # Resize image to half i.e., (45,160, 3)
+            image = cv2.resize(image, (160,45), fx=0.5, fy=0.5)
+            # Generate extra flipped image
             flipped_image = cv2.flip(image, 1)
             x_data = np.append(x_data, np.array([image]), axis = 0)
             y_data = np.append(y_data, y[i])
             x_data = np.append(x_data, np.array([flipped_image]), axis = 0)
+            # Flipe the steering angle too for the flipped image
             y_data = np.append(y_data, -1 * y[i])
         yield x_data, y_data
 
@@ -80,17 +90,17 @@ def train():
     nb_epoch = 1
     batch_size = 16
     model = get_model()
-    adam = Adam(lr=1e-6)
+    adam = Adam(lr=1e-12)
     model.compile(optimizer=adam, loss="mse")
-    model.load_weights('model_best3.h5')
+    #model.load_weights('model.h5')
     model.summary()
-    #checkpointer = ModelCheckpoint(filepath="model.h5", verbose=1, save_best_only=True)
+    #checkpointer = ModelCheckpoint(filepath="model_best.h5", verbose=1, save_best_only=True)
     history = model.fit_generator(
-        train_data_generator(x_train, y_train, batch_size),
+        batch_data_generator(x_train, y_train, batch_size),
         samples_per_epoch = ((len(y_train) // batch_size ) * batch_size) * 2,
         nb_epoch = nb_epoch,
         verbose = 1,
-        validation_data = train_data_generator(x_val, y_val, batch_size),
+        validation_data = batch_data_generator(x_val, y_val, batch_size),
         nb_val_samples = ((len(y_val) // batch_size ) * batch_size) * 2
     )
     # Save weights
