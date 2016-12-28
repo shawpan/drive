@@ -51,3 +51,24 @@ image = image[40:130]
 image = cv2.resize(image, (160,45))
 ```
 
+# Normalization
+1. Input values are normalized between `-0.5` and `0.5`. This is done using a `Lambda` layer in the model.
+
+# Model Architecture
+The model used here is a slight modification of the http://comma.ai/ model. It has 12 core layers and one preprocessing layer
+
+| Layer (type)                    |  Output Shape       | Param #    | Connected to          |
+| ------------------------------- |:-------------------:| ----------:| ---------------------:|
+| lambda_1 (Lambda)               | (None, 45, 160, 3)  | 0          | lambda_input_1[0][0]  |
+| convolution2d_1 (Convolution2D) | (None, 12, 40, 16)  | 3088       | lambda_1[0][0]        |
+| elu_1 (ELU)                     | (None, 12, 40, 16)  | 0          | convolution2d_1[0][0] |
+| convolution2d_2 (Convolution2D) | (None, 6, 20, 32)   | 12832      | elu_1[0][0]           |
+| elu_2 (ELU)                     | (None, 6, 20, 32)   | 0          | convolution2d_1[0][0] |
+| convolution2d_3 (Convolution2D) | (None, 3, 10, 64)   | 51264      | elu_2[0][0]           |
+| flatten_1 (Flatten)             | (None, 1920)        | 0          | convolution2d_3[0][0] |
+| dropout_1 (Dropout)             | (None, 1920)        | 0          | flatten_1[0][0]       |
+| elu_3 (ELU)                     | (None, 1920)        | 0          | dropout_1[0][0]       |
+| dense_1 (Dense)                 | (None, 512)         | 983552     | elu_3[0][0]           |
+| dropout_2 (Dropout)             | (None, 512)         | 0          | dense_1[0][0]         |
+| elu_4 (ELU)                     | (None, 512)         | 0          | dropout_2[0][0]       |
+| dense_2 (Dense)                 | (None, 1)           | 513        | elu_4[0][0]           |
