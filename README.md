@@ -7,6 +7,7 @@ Predict steering angle of a self driven car using behaviorial cloning
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=D5FvSXcjfEg
 " target="_blank"><img src="http://img.youtube.com/vi/D5FvSXcjfEg/0.jpg" 
 alt="Track 2" width="608" height="480" border="10" /></a>
+
 ## Track 1
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=tkAR-Uqi4LU
 " target="_blank"><img src="http://img.youtube.com/vi/tkAR-Uqi4LU/0.jpg" 
@@ -80,9 +81,18 @@ The model used here is a slight modification of the http://comma.ai/ model. It h
 | dense_2 (Dense)                 | (None, 1)           | 513        | elu_4[0][0]           |
  **Total params: 1051249**
 
+# Model Selection
+comma.ai and NVIDIA have already designed successful models and tested on real life scenarios for self driven car. NVIDIA model has more number of parameters. I had to build and train the model without GPU support so comma.ai model looked to be a good choice and many of the hyperparameters have also been tuned keeping it on mind. So,
+
+1. Chose comma.ai model and after trial and error with different hyperparamters such as `batch_size` (4,16, 32, 64, 128) and `epochs` (50,25, 20, 10) stopped at `batch_size=32` and `epochs=20` and found the set of weights with best validation score.  
+2. The weights were good enough to start the car well but to be heavily biased towards 0 steering_angle it went astray after a few seconds. 
+3. Removed some small angle < 0.07 inputs using probabilistic choice between two numbers  and re ran the process. Now it became biased towards frequent turns.
+4. Re ran the training with all data again concentrated on learning process rather than data. After tuning with further training and small learning_rate the performance improved but the car kept failing on one sharp right turn.
+5. Then picked NVIDIA model again but it took too long to tune the parameters so returned to comma.ai model
+6. Started tuning with last best set of weights and after successive training with a very small learning rate (~ 1e-8) and simulation the car was able to finish the lap. 
 
 # Training
-comma.ai and NVIDIA have already designed successful models and tested on real life scenarios for self driven car. NVIDIA model has more number of parameters. At first tried both but running NVIDIA model was more time consuming. So chose comma.ai model but with sufficient modification to work on our data or camera images. It is a very simple model compared to others regarding architecture and number of parameters. I had to build and train the model without GPU support so it has been a good choice and many of the hyperparameters have also been tuned keeping it on mind. The training phase has been based on mostly trial and error. The significant part of the process is 
+The training phase has been based on mostly trial and error. The significant part of the process is 
 
 1. The initial data is used to generate ~40k inputs using the process described in data generation and data augmentation. 
 2. 15% of the entire data was kept as validation set. 
