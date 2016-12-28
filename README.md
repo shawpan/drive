@@ -77,3 +77,19 @@ The model used here is a slight modification of the http://comma.ai/ model. It h
 
 
 # Training
+comma.ai and NVIDIA have already designed successful models and tested on real life scenarios for self driven car. NVIDIA model has more number of parameters. At first tried both but running NVIDIA model was more time consuming. So chose comma.ai model but with sufficient modification to work on our data or camera images. It is a very simple model compared to others regarding architecture and number of parameters. I had to build and train the model without GPU support so it has been a good choice and many of the hyperparameters have also been tuned keeping it on mind. The training phase has been based on mostly trial and error. The significant part of the process is 
+
+1. The initial data is used to generate ~40k inputs using the process described in data generation and data augmentation. 
+2. 15% of the entire data was kept as validation set. 
+3. Cropped image so that only the desired portion of the road is fed to train the model removing sky and back side of the car. This is important because noisy data may mislead the car.
+4. Resized the input image to half so that total number of trainable parameters is reduced. It significantly reduced the computation time without hampering performance.
+5. Used Python generator to supply training data in small batches since loading all the images in memory and augmenting is not feasible. `fit_generator` method of keras model is specifically built for this optimization.
+6. Chose batch size to be 16 which is spawned to become 32 after augmentation because it took less time as well as better performance. Before it, tried 64 and 128 which took a longer time as expected but did not improve much.
+7. Used adam optimizer with default learning_rate = 0.001 for minimizing loss. Both of the dropout layers were assigned keep_probabilty of 50%. 
+8. Intially trained the model for 20 Epochs and kept the best set of weights using `ModelCheckpoint` provided by keras. It took about 2 hours with `batch_size=32`. Applied this weight to simulator and the car started driving well for a few seconds with a fixed `throttle=0.2` before going astray. For the batch size 64 and 128, it was about 1 hour per 5 epoch. Clearly at this point, the model had a bias towards 0 angle because of imbalanced data of excessive 0 steering angle.
+9. Repeated the process after reduceing the straight angles from training data but then the car become biased towards frequent turns. So decided to keep all the data having 0 steering_angles for smooth driving.
+9. Then started tuning the weights reducing the learning rate by a factor of 10 and repeatedly used the same approach for 5 epochs with preloaded weights of previous best.
+10. By this time, the car was successful to drive well through the track except a nasty turn after the bridge. The combination of high speed and the predicted angle was failing it to keep its tire on the road.
+11. Kept reducing the learning rate and training with preloaded weights of previous best validation loss. But only for 1 epoch. It helped me to save time as each epoch takes about 6 minutes and I was able to check the simulation for the new weights.
+12. Finally the car was running better on the track and able to complete the lap. At this point the training loss was 0.0147 and validation loss was 0.0172
+13. At the end to make the driving smoother, the throttle in `drive.py` was reduced to 0.15 when the car was driving appearently straight i.e., `-0.1< steering_angle < 0.1` and 0 otherise which acted as a break.
