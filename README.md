@@ -55,7 +55,8 @@ image = cv2.resize(image, (160,45))
 1. Input values are normalized between `-0.5` and `0.5`. This is done using a `Lambda` layer in the model.
 
 # Model Architecture
-The model used here is a slight modification of the http://comma.ai/ model. It has 12 core layers and one preprocessing layer
+The model used here is a slight modification of the http://comma.ai/ model. It has 13 layers. 1 preprocessing Lambda layer
+, 3 Conv layers having 16, 32 and 64 filters with size (8,8) - strides (4,4) ,size (5,5) - strides(2,2), size (5,5) - strides (2,2) and 1 Fully Connected layers having 512 nodes and 1 output layer. For non-linearity activation Exponential Linear Unit, ELU is used. To prevent overfitting tw dropout layer is used 
 
 | Layer (type)                    |  Output Shape       | Param #    | Connected to          |
 | ------------------------------- |:-------------------:| ----------:| ---------------------:|
