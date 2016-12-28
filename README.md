@@ -73,6 +73,7 @@ The model used here is a slight modification of the http://comma.ai/ model. It h
 | dropout_2 (Dropout)             | (None, 512)         | 0          | dense_1[0][0]         |
 | elu_4 (ELU)                     | (None, 512)         | 0          | dropout_2[0][0]       |
 | dense_2 (Dense)                 | (None, 1)           | 513        | elu_4[0][0]           |
-----------------------------------------------------------------------------------------------
-Total params: 1051249
-----------------------------------------------------------------------------------------------
+ **Total params: 1051249**
+
+
+# Training
