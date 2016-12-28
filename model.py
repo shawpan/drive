@@ -67,7 +67,7 @@ def batch_data_generator (x, y, batch_size):
             # Crop the image vertically to remove unnecessary portions such as sky
             image = image[40:130]
             # Resize image to half i.e., (45,160, 3)
-            image = cv2.resize(image, (160,45), fx=0.5, fy=0.5)
+            image = cv2.resize(image, (160,45))
             # Generate extra flipped image
             flipped_image = cv2.flip(image, 1)
             x_data = np.append(x_data, np.array([image]), axis = 0)
