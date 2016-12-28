@@ -25,8 +25,8 @@ x.append(row['left'].strip())
 y.append(steering_angle + 0.25)
 
 # Generate data using right image
-x.append(row['left'].strip())
-y.append(steering_angle + 0.25)
+x.append(row['right'].strip())
+y.append(steering_angle - 0.25)
 ```
 
 # Real Time Data Augmentation
