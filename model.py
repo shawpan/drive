@@ -118,7 +118,7 @@ def build_data():
         x , y = [], []
         for row in reader:
             speed = float(row['speed'])
-            steering_angle = round(float(row['steering']),3)
+            steering_angle = float(row['steering'])
             x.append(row['left'].strip())
             y.append(steering_angle + 0.25)
             x.append(row['center'].strip())
