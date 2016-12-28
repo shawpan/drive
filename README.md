@@ -56,7 +56,7 @@ image = cv2.resize(image, (160,45))
 
 # Model Architecture
 The model used here is a slight modification of the http://comma.ai/ model. It has 13 layers. 1 preprocessing Lambda layer
-, 3 Conv layers having 16, 32 and 64 filters with size (8,8) - strides (4,4) ,size (5,5) - strides(2,2), size (5,5) - strides (2,2) and 1 Fully Connected layers having 512 nodes and 1 output layer. For non-linearity activation Exponential Linear Unit, ELU is used. To prevent overfitting tw dropout layer is used 
+, 3 Conv layers having 16, 32 and 64 filters with size (8,8) - strides (4,4) ,size (5,5) - strides(2,2), size (5,5) - strides (2,2) and 1 Fully Connected layers having 512 nodes and 1 output layer. For non-linearity activation Exponential Linear Unit, ELU is used. To prevent overfitting 2 dropout layer is used 
 
 | Layer (type)                    |  Output Shape       | Param #    | Connected to          |
 | ------------------------------- |:-------------------:| ----------:| ---------------------:|
