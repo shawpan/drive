@@ -3,9 +3,14 @@ Predict steering angle of a self driven car using behaviorial cloning
 
 
 # Simulation
+## Track 2
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=D5FvSXcjfEg
+" target="_blank"><img src="http://img.youtube.com/vi/D5FvSXcjfEg/0.jpg" 
+alt="Track 2" width="608" height="480" border="10" /></a>
+## Track 1
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=tkAR-Uqi4LU
 " target="_blank"><img src="http://img.youtube.com/vi/tkAR-Uqi4LU/0.jpg" 
-alt="IMAGE ALT TEXT HERE" width="1074" height="556" border="10" /></a>
+alt="Track 1" width="608" border="10" /></a>
 
 # Data Collection
 1. Data provided [here](https://d17h27t6h515a5.cloudfront.net/topher/2016/December/584f6edd_data/data.zip) by udacity is used with real time augmetation. data folder contains the contents given below:
