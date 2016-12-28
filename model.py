@@ -115,7 +115,7 @@ def build_data():
     # Get center image path and steering angle
     with open('./data/driving_log.csv') as log_file:
         reader = csv.DictReader(log_file)
-        x , y = extra_x = [], []
+        x , y = [], []
         for row in reader:
             speed = float(row['speed'])
             steering_angle = round(float(row['steering']),3)
